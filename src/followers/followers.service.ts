@@ -1,11 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { UpdateFollowerDto } from './dto/update-follower.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Follower, FollowerDocument } from './entities/follower.entity';
+import mongoose, { Model } from 'mongoose';
+import { IUser } from 'src/users/user.interface';
 
 @Injectable()
 export class FollowersService {
-  create(createFollowerDto: CreateFollowerDto) {
-    return 'This action adds a new follower';
+  constructor(
+    @InjectModel(Follower.name)
+    private followerModel: Model<FollowerDocument>,
+  ) {}
+
+  async create(createFollowerDto: CreateFollowerDto, user: IUser) {
+    let follower = await this.followerModel.create({
+      ...createFollowerDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
+    return {
+      _id: follower._id,
+      createdAt: follower?.createdAt,
+    };
   }
 
   findAll() {
@@ -20,7 +39,8 @@ export class FollowersService {
     return `This action updates a #${id} follower`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} follower`;
+  async remove(id: string, user?: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found follower';
+    return await this.followerModel.deleteOne({ _id: id });
   }
 }

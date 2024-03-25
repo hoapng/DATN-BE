@@ -1,15 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { FollowersService } from './followers.service';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { UpdateFollowerDto } from './dto/update-follower.dto';
+import { ResponseMessage, UserDecor } from 'src/decorator/customize';
+import { IUser } from 'src/users/user.interface';
 
 @Controller('followers')
 export class FollowersController {
   constructor(private readonly followersService: FollowersService) {}
 
   @Post()
-  create(@Body() createFollowerDto: CreateFollowerDto) {
-    return this.followersService.create(createFollowerDto);
+  @ResponseMessage('Create bookmark successfully')
+  create(
+    @Body() createFollowerDto: CreateFollowerDto,
+    @UserDecor() user: IUser,
+  ) {
+    return this.followersService.create(createFollowerDto, user);
   }
 
   @Get()
@@ -23,12 +37,15 @@ export class FollowersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFollowerDto: UpdateFollowerDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFollowerDto: UpdateFollowerDto,
+  ) {
     return this.followersService.update(+id, updateFollowerDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.followersService.remove(+id);
+  remove(@Param('id') id: string, @UserDecor() user: IUser) {
+    return this.followersService.remove(id, user);
   }
 }
