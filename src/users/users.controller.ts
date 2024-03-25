@@ -18,11 +18,11 @@ import { IUser } from './user.interface';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @ResponseMessage('Create user successfully')
-  create(@Body() createUserDto: CreateUserDto, @UserDecor() user: IUser) {
-    return this.usersService.create(createUserDto, user);
-  }
+  // @Post()
+  // @ResponseMessage('Create user successfully')
+  // create(@Body() createUserDto: CreateUserDto, @UserDecor() user: IUser) {
+  //   return this.usersService.create(createUserDto, user);
+  // }
 
   @Get()
   @ResponseMessage('Get all users successfully with pagination')

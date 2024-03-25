@@ -28,15 +28,6 @@ export class User {
   role: Role;
 
   @Prop({ type: Object })
-  company: {
-    _id: mongoose.Schema.Types.ObjectId;
-    name: string;
-  };
-
-  // @Prop()
-  // phone: string;
-
-  @Prop({ type: Object })
   createdBy: {
     _id: mongoose.Schema.Types.ObjectId;
     email: string;

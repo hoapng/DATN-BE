@@ -10,3 +10,9 @@ export enum Role {
   User = 'user',
   Admin = 'admin',
 }
+
+export enum TweetType {
+  Post,
+  Share,
+  Comment,
+}
