@@ -13,6 +13,7 @@ export class TweetsService {
     @InjectModel(Tweet.name)
     private tweetModel: SoftDeleteModel<TweetDocument>,
   ) {}
+
   async create(createTweetDto: CreateTweetDto, user: IUser) {
     let tweet = await this.tweetModel.create({
       ...createTweetDto,
