@@ -13,7 +13,7 @@ import { TweetsModule } from './tweets/tweets.module';
 import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { FollowersModule } from './followers/followers.module';
-import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -24,10 +24,10 @@ import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
-        connectionFactory: (connection) => {
-          connection.plugin(softDeletePlugin);
-          return connection;
-        },
+        // connectionFactory: (connection) => {
+        //   connection.plugin(softDeletePlugin);
+        //   return connection;
+        // },
       }),
       inject: [ConfigService],
     }),
@@ -41,7 +41,7 @@ import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
     LikesModule,
     BookmarksModule,
     FollowersModule,
-    RefreshTokensModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [

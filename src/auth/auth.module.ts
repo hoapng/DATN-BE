@@ -10,6 +10,10 @@ import ms from 'ms';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
+import {
+  RefreshToken,
+  RefreshTokenSchema,
+} from './entities/refresh-token.entity';
 
 @Module({
   imports: [
@@ -25,7 +29,10 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: RefreshToken.name, schema: RefreshTokenSchema },
+    ]),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],

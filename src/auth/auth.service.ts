@@ -9,6 +9,12 @@ import { User, UserDocument } from 'src/users/schemas/user.schema';
 import ms from 'ms';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
+import { Model } from 'mongoose';
+import {
+  RefreshToken,
+  RefreshTokenDocument,
+} from './entities/refresh-token.entity';
+import { Role } from 'src/constants/enum';
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,6 +24,9 @@ export class AuthService {
 
     @InjectModel(User.name)
     private userModel: SoftDeleteModel<UserDocument>,
+
+    @InjectModel(RefreshToken.name)
+    private refreshTokenModel: Model<RefreshTokenDocument>,
 
     private configService: ConfigService,
   ) {}
@@ -47,7 +56,8 @@ export class AuthService {
     const refresh_token = this.createRefreshToken(payload);
 
     //update refresh token
-    await this.usersService.updateUserToken(_id, refresh_token);
+    // await this.usersService.updateUserToken(_id, refresh_token);
+    await this.refreshTokenModel.create({ user_id: _id, token: refresh_token });
 
     // set cookie
     response.cookie('refresh_token', refresh_token, {
@@ -66,19 +76,19 @@ export class AuthService {
 
   async register(registerUserDto: RegisterUserDto) {
     //check email exist
-    // const userExist = await this.userModel.findOne({
-    //   email: registerUserDto.email,
-    // });
-    // if (userExist) {
-    //   throw new BadRequestException('Email already exist');
-    // }
+    const userExist = await this.userModel.findOne({
+      email: registerUserDto.email,
+    });
+    if (userExist) {
+      throw new BadRequestException('Email already exist');
+    }
 
     registerUserDto.password = this.usersService.getHashPassword(
       registerUserDto.password,
     );
     let user = await this.userModel.create({
       ...registerUserDto,
-      role: 'USER',
+      role: Role.User,
     });
     return {
       _id: user?._id,
@@ -86,7 +96,14 @@ export class AuthService {
     };
   }
 
-  createRefreshToken = (payload: any) => {
+  createRefreshToken = (payload: any, expiresIn?: number) => {
+    if (expiresIn) {
+      const refresh_token = this.jwtService.sign(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn,
+      });
+      return refresh_token;
+    }
     const refresh_token = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn:
@@ -101,10 +118,11 @@ export class AuthService {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
 
-      let user = await this.usersService.findUserByToken(refreshToken);
-      if (user) {
-        const { _id, name, email, role } = user;
-        const payload = {
+      // let user = await this.usersService.findUserByToken(refreshToken);
+      const payload = this.jwtService.decode(refreshToken) as any;
+      if (payload) {
+        const { _id, name, email, role, exp } = payload;
+        const newPayload = {
           sub: 'token refresh',
           iss: 'from server',
           _id,
@@ -113,21 +131,27 @@ export class AuthService {
           role,
         };
 
-        const refresh_token = this.createRefreshToken(payload);
+        const expiresIn = exp - Math.floor(Date.now() / 1000);
+
+        const newRefreshToken = this.createRefreshToken(newPayload, expiresIn);
 
         //update refresh token
-        await this.usersService.updateUserToken(_id.toString(), refresh_token);
+        // await this.usersService.updateUserToken(_id.toString(), refresh_token);
+        await this.refreshTokenModel.findOneAndUpdate(
+          { token: refreshToken },
+          { $set: { token: newRefreshToken } },
+        );
 
         // set cookie
         response.clearCookie('refresh_token');
 
-        response.cookie('refresh_token', refresh_token, {
+        response.cookie('refresh_token', newRefreshToken, {
           httpOnly: true,
           maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
         });
 
         return {
-          access_token: this.jwtService.sign(payload),
+          access_token: this.jwtService.sign(newPayload),
           _id,
           name,
           email,
@@ -139,9 +163,10 @@ export class AuthService {
     }
   };
 
-  logout = async (user: IUser, response: Response) => {
+  logout = async (refreshToken: string, response: Response) => {
     response.clearCookie('refresh_token');
-    await this.usersService.updateUserToken(user._id, '');
+    // await this.usersService.updateUserToken(user._id, '');
+    await this.refreshTokenModel.deleteOne({ token: refreshToken });
     return 'ok';
   };
 }

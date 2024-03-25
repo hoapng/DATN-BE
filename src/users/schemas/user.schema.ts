@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Role } from 'src/constants/role.enum';
+import { Role } from 'src/constants/enum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -25,7 +25,7 @@ export class User {
   address: string;
 
   @Prop()
-  role: Role[];
+  role: Role;
 
   @Prop({ type: Object })
   company: {
