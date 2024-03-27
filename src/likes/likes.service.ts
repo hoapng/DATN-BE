@@ -41,6 +41,9 @@ export class LikesService {
 
   async remove(id: string, user?: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found like';
-    return await this.likeModel.deleteOne({ _id: id });
+    return await this.likeModel.deleteOne({
+      _id: id,
+      // createdBy: { _id: user._id },
+    });
   }
 }
