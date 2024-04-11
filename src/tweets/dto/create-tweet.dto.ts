@@ -9,7 +9,7 @@ export class CreateTweetDto {
   @IsNotEmpty({ message: 'Content is required' })
   content: string;
 
-  parent_id: null | mongoose.Schema.Types.ObjectId;
+  parent: null | mongoose.Schema.Types.ObjectId;
 
   @IsArray()
   files: string[];

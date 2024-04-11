@@ -33,10 +33,7 @@ export class UsersService {
     createUserDto.password = this.getHashPassword(createUserDto.password);
     let newUser = await this.userModel.create({
       ...createUserDto,
-      createdBy: {
-        _id: user._id,
-        email: user.email,
-      },
+      createdBy: user._id,
     });
     return {
       _id: newUser._id,
@@ -94,10 +91,10 @@ export class UsersService {
       { _id: updateUserDto._id },
       {
         ...updateUserDto,
-        updatedBy: {
-          _id: user._id,
-          email: user.email,
-        },
+        // updatedBy: {
+        //   _id: user._id,
+        //   email: user.email,
+        // },
       },
     );
   }
@@ -107,10 +104,7 @@ export class UsersService {
     await this.userModel.updateOne(
       { _id: id },
       {
-        deletedBy: {
-          _id: user._id,
-          email: user.email,
-        },
+        deletedBy: user._id,
       },
     );
     return await this.userModel.softDelete({ _id: id });

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { TweetType } from 'src/constants/enum';
+import { User } from 'src/users/schemas/user.schema';
 
 export type TweetDocument = HydratedDocument<Tweet>;
 
@@ -12,17 +13,14 @@ export class Tweet {
   @Prop()
   content: string;
 
-  @Prop()
-  parent_id: null | mongoose.Schema.Types.ObjectId; //  chỉ null khi tweet gốc
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Tweet.name })
+  parent: null | mongoose.Schema.Types.ObjectId; //  chỉ null khi tweet gốc
 
   @Prop()
   files: string[];
 
-  @Prop({ type: Object })
-  createdBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  createdBy: mongoose.Schema.Types.ObjectId;
 
   //   @Prop({ type: Object })
   //   updatedBy: {
@@ -30,11 +28,8 @@ export class Tweet {
   //     email: string;
   //   };
 
-  @Prop({ type: Object })
-  deletedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  deletedBy: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   createdAt: Date;

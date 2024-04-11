@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BookmarksService } from './bookmarks.service';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
@@ -27,8 +28,13 @@ export class BookmarksController {
   }
 
   @Get()
-  findAll() {
-    return this.bookmarksService.findAll();
+  @ResponseMessage('Get all users successfully with pagination')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string,
+  ) {
+    return this.bookmarksService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')

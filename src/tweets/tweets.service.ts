@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Tweet, TweetDocument } from './entities/tweet.entity';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import mongoose from 'mongoose';
+import aqp from 'api-query-params';
 
 @Injectable()
 export class TweetsService {
@@ -17,10 +18,7 @@ export class TweetsService {
   async create(createTweetDto: CreateTweetDto, user: IUser) {
     let tweet = await this.tweetModel.create({
       ...createTweetDto,
-      createdBy: {
-        _id: user._id,
-        email: user.email,
-      },
+      createdBy: user._id,
     });
     return {
       _id: tweet._id,
@@ -28,8 +26,34 @@ export class TweetsService {
     };
   }
 
-  findAll() {
-    return `This action returns all tweets`;
+  async findAll(currentPage: number, limit: number, qs: string) {
+    const { filter, sort, projection, population } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    let offset = (+currentPage - 1) * +limit;
+    let defaultLimit = +limit ? +limit : 10;
+
+    const totalItems = (await this.tweetModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+    const result = await this.tweetModel
+      .find(filter)
+      .skip(offset)
+      .limit(defaultLimit)
+      .sort(sort as any)
+      .populate(population)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage, //trang hiện tại
+        pageSize: limit, //số lượng bản ghi đã lấy
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems, // tổng số phần tử (số bản ghi)
+      },
+      result, //kết quả query
+    };
   }
 
   findOne(id: string) {
@@ -56,10 +80,7 @@ export class TweetsService {
     await this.tweetModel.updateOne(
       { _id: id },
       {
-        deletedBy: {
-          _id: user._id,
-          email: user.email,
-        },
+        deletedBy: user._id,
       },
     );
     return await this.tweetModel.softDelete({ _id: id });

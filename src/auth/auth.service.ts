@@ -74,6 +74,100 @@ export class AuthService {
     };
   }
 
+  async provider(user: any, response: Response) {
+    //check email exist
+    const userExist = await this.userModel.findOneAndUpdate(
+      { email: user.email },
+      {
+        name: user.name,
+        avatar: user.image,
+      },
+      {
+        omitUndefined: true,
+        new: true,
+      },
+    );
+    if (userExist) {
+      const { _id, name, email, role, avatar } = userExist;
+      const payload = {
+        sub: 'token login',
+        iss: 'from server',
+        _id,
+        name,
+        email,
+        role,
+      };
+      const refresh_token = this.createRefreshToken(payload);
+
+      //update refresh token
+      // await this.usersService.updateUserToken(_id, refresh_token);
+      await this.refreshTokenModel.create({
+        user_id: _id,
+        token: refresh_token,
+      });
+
+      // set cookie
+      // response.cookie('refresh_token', refresh_token, {
+      //   httpOnly: true,
+      //   maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
+      // });
+
+      return {
+        access_token: this.jwtService.sign(payload),
+        refresh_token,
+        user: {
+          _id,
+          name,
+          email,
+          avatar,
+          role,
+        },
+      };
+    } else {
+      let newUser = await this.userModel.create({
+        name: user.name,
+        email: user.email,
+        avatar: user.image,
+        role: Role.User,
+      });
+      const { _id, name, email, role, avatar } = newUser;
+      const payload = {
+        sub: 'token login',
+        iss: 'from server',
+        _id,
+        name,
+        email,
+        avatar,
+        role,
+      };
+      const refresh_token = this.createRefreshToken(payload);
+
+      //update refresh token
+      // await this.usersService.updateUserToken(_id, refresh_token);
+      await this.refreshTokenModel.create({
+        user_id: _id,
+        token: refresh_token,
+      });
+
+      // set cookie
+      // response.cookie('refresh_token', refresh_token, {
+      //   httpOnly: true,
+      //   maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')),
+      // });
+
+      return {
+        access_token: this.jwtService.sign(payload),
+        refresh_token,
+        user: {
+          _id,
+          name,
+          email,
+          role,
+        },
+      };
+    }
+  }
+
   async register(registerUserDto: RegisterUserDto) {
     //check email exist
     const userExist = await this.userModel.findOne({

@@ -16,10 +16,7 @@ export class FollowersService {
   async create(createFollowerDto: CreateFollowerDto, user: IUser) {
     let follower = await this.followerModel.create({
       ...createFollowerDto,
-      createdBy: {
-        _id: user._id,
-        email: user.email,
-      },
+      createdBy: user._id,
     });
     return {
       _id: follower._id,

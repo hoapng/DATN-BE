@@ -14,13 +14,14 @@ export class LikesService {
   ) {}
 
   async create(createLikeDto: CreateLikeDto, user: IUser) {
-    let like = await this.likeModel.create({
-      ...createLikeDto,
-      createdBy: {
-        _id: user._id,
-        email: user.email,
+    let like = await this.likeModel.findOneAndUpdate(
+      { tweet: createLikeDto.tweet, createdBy: user._id },
+      {
+        ...createLikeDto,
+        createdBy: user._id,
       },
-    });
+      { new: true, upsert: true },
+    );
     return {
       _id: like._id,
       createdAt: like?.createdAt,

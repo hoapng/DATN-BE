@@ -28,6 +28,14 @@ export class AuthController {
   }
 
   @Public()
+  // @UseGuards(LocalAuthGuard)
+  @Post('/provider')
+  // @ResponseMessage('Login successfully')
+  async provider(@Body() user, @Res({ passthrough: true }) response: Response) {
+    return this.authService.provider(user, response);
+  }
+
+  @Public()
   @ResponseMessage('Register user successfully')
   @Post('/register')
   async register(@Body() registerUserDto: RegisterUserDto) {

@@ -9,10 +9,13 @@ export class User {
   @Prop()
   name: string;
 
+  @Prop()
+  avatar: string;
+
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop()
   password: string;
 
   @Prop()
@@ -27,23 +30,17 @@ export class User {
   @Prop()
   role: Role;
 
-  @Prop({ type: Object })
-  createdBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  createdBy: mongoose.Schema.Types.ObjectId;
 
-  @Prop({ type: Object })
-  updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  // @Prop({ type: Object })
+  // updatedBy: {
+  //   _id: mongoose.Schema.Types.ObjectId;
+  //   email: string;
+  // };
 
-  @Prop({ type: Object })
-  deletedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
+  deletedBy: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   createdAt: Date;

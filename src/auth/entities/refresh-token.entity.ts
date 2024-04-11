@@ -9,7 +9,7 @@ export class RefreshToken {
   token: string;
 
   @Prop()
-  user_id: mongoose.Schema.Types.ObjectId;
+  createdBy: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   created_at: Date;

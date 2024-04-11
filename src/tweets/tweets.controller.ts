@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TweetsService } from './tweets.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
@@ -23,11 +24,16 @@ export class TweetsController {
     return this.tweetsService.create(createTweetDto, user);
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.tweetsService.findAll();
+  @ResponseMessage('Get all users successfully with pagination')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string,
+  ) {
+    return this.tweetsService.findAll(+currentPage, +limit, qs);
   }
-
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {
