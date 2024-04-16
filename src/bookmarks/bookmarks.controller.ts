@@ -38,8 +38,8 @@ export class BookmarksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookmarksService.findOne(+id);
+  findOne(@Param('id') tweet: string, @UserDecor() user: IUser) {
+    return this.bookmarksService.findOne(tweet, user);
   }
 
   @Patch(':id')

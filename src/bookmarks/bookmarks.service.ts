@@ -59,8 +59,15 @@ export class BookmarksService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bookmark`;
+  async findOne(tweet: string, user: IUser) {
+    let bookmark = await this.bookmarkModel.findOne({
+      tweet: tweet,
+      createdBy: user._id,
+    });
+    return {
+      _id: bookmark._id,
+      createdAt: bookmark?.createdAt,
+    };
   }
 
   update(id: number, updateBookmarkDto: UpdateBookmarkDto) {
