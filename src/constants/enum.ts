@@ -15,4 +15,8 @@ export enum TweetType {
   Post,
   Share,
   Comment,
+  News,
+  Review,
+  Tips,
+  Question,
 }

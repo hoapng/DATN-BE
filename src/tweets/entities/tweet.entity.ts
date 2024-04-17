@@ -11,6 +11,9 @@ export class Tweet {
   type: TweetType;
 
   @Prop()
+  title: null | string;
+
+  @Prop()
   content: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Tweet.name })

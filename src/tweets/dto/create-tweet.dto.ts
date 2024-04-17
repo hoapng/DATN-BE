@@ -6,6 +6,8 @@ export class CreateTweetDto {
   @IsNotEmpty({ message: 'Name is required' })
   type: TweetType;
 
+  title: null | string;
+
   @IsNotEmpty({ message: 'Content is required' })
   content: string;
 
