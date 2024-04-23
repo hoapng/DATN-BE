@@ -7,19 +7,32 @@ import { Tweet, TweetDocument } from './entities/tweet.entity';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';
+import { HashtagService } from 'src/hashtag/hashtag.service';
 
 @Injectable()
 export class TweetsService {
   constructor(
     @InjectModel(Tweet.name)
     private tweetModel: SoftDeleteModel<TweetDocument>,
+
+    private hashtagService: HashtagService,
   ) {}
 
   async create(createTweetDto: CreateTweetDto, user: IUser) {
-    let tweet = await this.tweetModel.create({
-      ...createTweetDto,
-      createdBy: user._id,
-    });
+    const [tweet] = await Promise.all([
+      this.tweetModel.create({
+        ...createTweetDto,
+        createdBy: user._id,
+      }),
+      ...createTweetDto.hashtags.map((hashtag) =>
+        this.hashtagService.create({ name: hashtag }),
+      ),
+    ]);
+
+    // let tweet = await this.tweetModel.create({
+    //   ...createTweetDto,
+    //   createdBy: user._id,
+    // });
     return {
       _id: tweet._id,
       createdAt: tweet?.createdAt,

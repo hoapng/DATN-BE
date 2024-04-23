@@ -4,6 +4,7 @@ import { TweetsController } from './tweets.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Tweet, TweetSchema } from './entities/tweet.entity';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { HashtagModule } from 'src/hashtag/hashtag.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
         },
       },
     ]),
+    HashtagModule,
   ],
   controllers: [TweetsController],
   providers: [TweetsService],

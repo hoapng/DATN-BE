@@ -22,6 +22,9 @@ export class Tweet {
   @Prop()
   files: string[];
 
+  @Prop()
+  hashtags: string[];
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   createdBy: mongoose.Schema.Types.ObjectId;
 

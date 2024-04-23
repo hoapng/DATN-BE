@@ -14,6 +14,7 @@ import { LikesModule } from './likes/likes.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { FollowersModule } from './followers/followers.module';
 import { CaslModule } from './casl/casl.module';
+import { HashtagModule } from './hashtag/hashtag.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CaslModule } from './casl/casl.module';
     BookmarksModule,
     FollowersModule,
     CaslModule,
+    HashtagModule,
   ],
   controllers: [AppController],
   providers: [

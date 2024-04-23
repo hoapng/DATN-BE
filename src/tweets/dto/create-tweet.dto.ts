@@ -15,4 +15,7 @@ export class CreateTweetDto {
 
   @IsArray()
   files: string[];
+
+  @IsArray()
+  hashtags: string[];
 }

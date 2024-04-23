@@ -26,7 +26,7 @@ export class TweetsController {
 
   @Public()
   @Get()
-  @ResponseMessage('Get all users successfully with pagination')
+  @ResponseMessage('Get all tweets successfully with pagination')
   findAll(
     @Query('current') currentPage: string,
     @Query('pageSize') limit: string,
@@ -34,6 +34,7 @@ export class TweetsController {
   ) {
     return this.tweetsService.findAll(+currentPage, +limit, qs);
   }
+
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {
