@@ -26,24 +26,22 @@ export class FilesController {
   @ResponseMessage('File uploaded successfully.')
   @UseInterceptors(FilesInterceptor('filesUpload'))
   uploadFile(
-    @UploadedFiles(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType:
-            /^(jpg|jpeg|image\/jpeg|png|image\/png|gif|txt|pdf|application\/pdf|doc|docx|text\/plain)$/i,
-        })
-        .addMaxSizeValidator({
-          maxSize: 1024 * 1024 * 1024,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    files: Express.Multer.File[],
+    @UploadedFiles() files: Express.Multer.File[],
+    // new ParseFilePipeBuilder()
+    //   .addFileTypeValidator({
+    //     fileType:
+    //       /^(jpg|jpeg|image\/jpeg|png|image\/png|gif|txt|pdf|application\/pdf|doc|docx|text\/plain)$/i,
+    //   })
+    //   .addMaxSizeValidator({
+    //     maxSize: 1024 * 1024 * 1024,
+    //   })
+    //   .build({
+    //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    //   }),
   ) {
     return {
-      files,
-      // fileName: files.map((file) => file.filename),
+      // files,
+      fileNames: files.map((file) => file.filename),
     };
   }
 

@@ -73,8 +73,8 @@ export class HashtagService {
           $match: {
             ...filter,
             createdAt: {
-              $gte: new Date(from),
-              $lte: new Date(to),
+              $gte: from ? new Date(from) : new Date(null),
+              $lte: to ? new Date(to) : new Date(),
             },
           },
         },
@@ -94,8 +94,8 @@ export class HashtagService {
           $match: {
             ...filter,
             createdAt: {
-              $gte: new Date(from),
-              $lte: new Date(to),
+              $gte: from ? new Date(from) : new Date(null),
+              $lte: to ? new Date(to) : new Date(),
             },
           },
         },
