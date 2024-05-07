@@ -6,12 +6,12 @@ export class CreateTweetDto {
   @IsNotEmpty({ message: 'Name is required' })
   type: TweetType;
 
-  title: null | string;
+  title: string | null;
 
   @IsNotEmpty({ message: 'Content is required' })
   content: string;
 
-  parent: null | mongoose.Schema.Types.ObjectId;
+  parent: mongoose.Schema.Types.ObjectId | null;
 
   @IsArray()
   files: string[];

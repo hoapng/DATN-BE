@@ -11,13 +11,13 @@ export class Tweet {
   type: TweetType;
 
   @Prop()
-  title: null | string;
+  title: string | null;
 
   @Prop()
   content: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Tweet.name })
-  parent: null | mongoose.Schema.Types.ObjectId; //  chỉ null khi tweet gốc
+  parent: mongoose.Schema.Types.ObjectId | null; //  chỉ null khi tweet gốc
 
   @Prop()
   files: string[];
