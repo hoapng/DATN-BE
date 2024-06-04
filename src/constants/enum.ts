@@ -12,11 +12,10 @@ export enum Role {
 }
 
 export enum TweetType {
-  Post,
-  Share,
-  Comment,
-  News,
-  Review,
-  Tips,
-  Question,
+  Post = 'Post',
+  Share = 'Share',
+  News = 'News',
+  Review = 'Review',
+  Tips = 'Tips',
+  Question = 'Question',
 }

@@ -8,6 +8,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';
 import { HashtagService } from 'src/hashtag/hashtag.service';
+import ContentBasedRecommender, { Options } from 'content-based-recommender-ts';
 
 @Injectable()
 export class TweetsService {
@@ -28,11 +29,6 @@ export class TweetsService {
         this.hashtagService.create({ name: hashtag }),
       ),
     ]);
-
-    // let tweet = await this.tweetModel.create({
-    //   ...createTweetDto,
-    //   createdBy: user._id,
-    // });
     return {
       _id: tweet._id,
       createdAt: tweet?.createdAt,
@@ -69,11 +65,71 @@ export class TweetsService {
     };
   }
 
-  findOne(id: string) {
+  findOne(id: string, qs: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found tweet';
+    const { filter, sort, projection, population } = aqp(qs);
 
-    return this.tweetModel.findOne({ _id: id });
+    return this.tweetModel.findOne({ _id: id }).populate(population).exec();
   }
+
+  async recommend(id: string, qs: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found tweet';
+    const options: Options = {
+      maxSimilarDocs: 5, // example value
+      maxVectorSize: 100, // example value
+      minScore: 0.01, // example value
+      debug: true, // example value
+    };
+    const recommender = new ContentBasedRecommender(options);
+    // prepare documents data
+
+    const data = await this.findAll(1, 20, qs);
+
+    const documents = data.result.filter((x) => x._id.toString() !== id);
+
+    const posts = [await this.tweetModel.findOne({ _id: id }), ...documents];
+
+    const transformDocuments = posts.map((document) => {
+      return {
+        id: document._id.toString(),
+        content: document.title,
+      };
+    });
+
+    // const documents = [
+    //   { id: '1000001', content: 'Why studying javascript is fun?' },
+    //   {
+    //     id: '1000002',
+    //     content: 'The trend for javascript in machine learning',
+    //   },
+    //   {
+    //     id: '1000003',
+    //     content: 'The most insightful stories about JavaScript',
+    //   },
+    //   { id: '1000004', content: 'Introduction to Machine Learning' },
+    //   { id: '1000005', content: 'Machine learning and its application' },
+    //   { id: '1000006', content: 'Python vs Javascript, which is better?' },
+    //   { id: '1000007', content: 'How Python saved my life?' },
+    //   { id: '1000008', content: 'The future of Bitcoin technology' },
+    //   {
+    //     id: '1000009',
+    //     content: 'Is it possible to use javascript for machine learning?',
+    //   },
+    // ];
+
+    // start training
+    recommender.train(transformDocuments);
+
+    //get top 10 similar items to document 1000002
+    const similarDocuments = recommender
+      .getSimilarDocuments(id, 0, 5)
+      .map((x) => x.id);
+    return {
+      result: posts.filter((x) => similarDocuments.includes(x._id.toString())),
+    };
+  }
+
+  async recommendFeeds() {}
 
   async update(id: string, updateTweetDto: UpdateTweetDto, user?: IUser) {
     return await this.tweetModel.updateOne(

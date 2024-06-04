@@ -1,25 +1,24 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
+import { CommentsService } from './comments.service';
+import { CommentsController } from './comments.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
+import { Comment, CommentSchema } from './entities/comment.entity';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 
 @Module({
+  controllers: [CommentsController],
+  providers: [CommentsService],
   imports: [
     MongooseModule.forFeatureAsync([
       {
-        name: User.name,
+        name: Comment.name,
         useFactory: () => {
-          const schema = UserSchema;
+          const schema = CommentSchema;
           schema.plugin(softDeletePlugin);
           return schema;
         },
       },
     ]),
   ],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
 })
-export class UsersModule {}
+export class CommentsModule {}

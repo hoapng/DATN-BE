@@ -12,7 +12,8 @@ import aqp from 'api-query-params';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(User.name)
+    private userModel: SoftDeleteModel<UserDocument>,
   ) {}
 
   getHashPassword = (password: string) => {
@@ -100,7 +101,7 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser) {
-    if (!mongoose.Types.ObjectId.isValid(id)) return 'not found user';
+    if (!mongoose.Types.ObjectId.isValid(id)) return 'Not found user';
     await this.userModel.updateOne(
       { _id: id },
       {

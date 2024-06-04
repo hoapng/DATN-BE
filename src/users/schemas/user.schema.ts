@@ -19,6 +19,9 @@ export class User {
   password: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   age: number;
 
   @Prop()

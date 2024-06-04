@@ -84,6 +84,7 @@ export class AuthService {
       },
       {
         omitUndefined: true,
+        upsert: true,
         new: true,
       },
     );

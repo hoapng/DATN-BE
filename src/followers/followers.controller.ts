@@ -6,11 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { FollowersService } from './followers.service';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { UpdateFollowerDto } from './dto/update-follower.dto';
-import { ResponseMessage, UserDecor } from 'src/decorator/customize';
+import { Public, ResponseMessage, UserDecor } from 'src/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 
 @Controller('followers')
@@ -26,9 +27,15 @@ export class FollowersController {
     return this.followersService.create(createFollowerDto, user);
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.followersService.findAll();
+  @ResponseMessage('Get all users successfully with pagination')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string,
+  ) {
+    return this.followersService.findAll(+currentPage, +limit, qs);
   }
 
   @Get(':id')

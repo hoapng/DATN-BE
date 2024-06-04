@@ -25,6 +25,7 @@ export class UsersController {
   // }
 
   @Get()
+  @Public()
   @ResponseMessage('Get all users successfully with pagination')
   findAll(
     @Query('current') currentPage: string,

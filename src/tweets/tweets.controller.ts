@@ -37,8 +37,14 @@ export class TweetsController {
 
   @Get(':id')
   @Public()
-  findOne(@Param('id') id: string) {
-    return this.tweetsService.findOne(id);
+  findOne(@Param('id') id: string, @Query() qs: string) {
+    return this.tweetsService.findOne(id, qs);
+  }
+
+  @Get('recommend/:id')
+  @Public()
+  recommend(@Param('id') id: string, @Query() qs: string) {
+    return this.tweetsService.recommend(id, qs);
   }
 
   @Patch(':id')
