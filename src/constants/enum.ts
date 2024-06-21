@@ -19,3 +19,10 @@ export enum TweetType {
   Tips = 'Tips',
   Question = 'Question',
 }
+
+export enum ProductType {
+  New = 'New',
+  LikeNew = 'LikeNew',
+  Good = 'Good',
+  Fine = 'Fine',
+}

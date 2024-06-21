@@ -16,6 +16,8 @@ import { FollowersModule } from './followers/followers.module';
 import { CaslModule } from './casl/casl.module';
 import { HashtagModule } from './hashtag/hashtag.module';
 import { CommentsModule } from './comments/comments.module';
+import { ProductsModule } from './products/products.module';
+import { BadwordsModule } from './badwords/badwords.module';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { CommentsModule } from './comments/comments.module';
     CaslModule,
     HashtagModule,
     CommentsModule,
+    ProductsModule,
+    BadwordsModule,
   ],
   controllers: [AppController],
   providers: [
