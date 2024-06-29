@@ -11,7 +11,7 @@ export class Tweet {
   type: TweetType;
 
   @Prop()
-  title: string | null;
+  title: string;
 
   @Prop()
   content: string;

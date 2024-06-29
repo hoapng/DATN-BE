@@ -3,7 +3,7 @@ import { ProductType } from 'src/constants/enum';
 
 export class CreateProductDto {
   @IsNotEmpty({ message: 'Name is required' })
-  name: string | null;
+  name: string;
 
   @IsNotEmpty({ message: 'Description is required' })
   description: string | null;

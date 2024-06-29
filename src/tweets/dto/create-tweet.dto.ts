@@ -3,15 +3,15 @@ import mongoose from 'mongoose';
 import { TweetType } from 'src/constants/enum';
 
 export class CreateTweetDto {
-  @IsNotEmpty({ message: 'Name is required' })
+  @IsNotEmpty({ message: 'Type is required' })
   type: TweetType;
 
   @IsNotEmpty({ message: 'Title is required' })
-  title: string | null;
+  title: string;
 
-  content: string | null;
+  content: string;
 
-  parent: mongoose.Schema.Types.ObjectId | null;
+  parent: mongoose.Schema.Types.ObjectId;
 
   @IsArray()
   files: string[];

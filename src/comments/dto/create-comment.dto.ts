@@ -7,7 +7,7 @@ export class CreateCommentDto {
 
   post: mongoose.Schema.Types.ObjectId;
 
-  parent: mongoose.Schema.Types.ObjectId | null;
+  parent: mongoose.Schema.Types.ObjectId;
 
   // @IsArray()
   // files: string[];
