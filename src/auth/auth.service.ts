@@ -89,7 +89,19 @@ export class AuthService {
       },
     );
     if (userExist) {
-      const { _id, name, email, role, avatar } = userExist;
+      const userUpdate = await this.userModel.findOneAndUpdate(
+        { email: user.email },
+        {
+          name: user.name,
+          avatar: user.image,
+        },
+        {
+          omitUndefined: true,
+          upsert: true,
+          new: true,
+        },
+      );
+      const { _id, name, email, role, avatar } = userUpdate;
       const payload = {
         sub: 'token login',
         iss: 'from server',
@@ -125,7 +137,7 @@ export class AuthService {
         },
       };
     } else {
-      let newUser = await this.userModel.create({
+      const newUser = await this.userModel.create({
         name: user.name,
         email: user.email,
         avatar: user.image,
