@@ -35,26 +35,27 @@ export class MulterConfigService implements MulterOptionsFactory {
       }
     });
   }
+  // createMulterOptions(): MulterModuleOptions {
+  //   return {
+  //     storage: diskStorage({
+  //       destination: (req, file, cb) => {
+  //         const folder = 'uploadedFiles';
+  //         this.ensureExists(`public/images/${folder}`);
+  //         cb(null, join(this.getRootPath(), `public/images/${folder}`));
+  //       },
+  //       filename: (req, file, cb) => {
+  //         // get image extension
+  //         let extName = path.extname(file.originalname);
+  //         //get image's name (without extension)
+  //         let baseName = path.basename(file.originalname, extName);
+  //         let finalName = `${baseName}-${Date.now()}${extName}`;
+  //         cb(null, finalName);
+  //       },
+  //     }),
+  //   };
+  // }
+
   createMulterOptions(): MulterModuleOptions {
-    return {
-      storage: diskStorage({
-        destination: (req, file, cb) => {
-          const folder = 'uploadedFiles';
-          this.ensureExists(`public/images/${folder}`);
-          cb(null, join(this.getRootPath(), `public/images/${folder}`));
-        },
-        filename: (req, file, cb) => {
-          // get image extension
-          let extName = path.extname(file.originalname);
-          //get image's name (without extension)
-          let baseName = path.basename(file.originalname, extName);
-          let finalName = `${baseName}-${Date.now()}${extName}`;
-          cb(null, finalName);
-        },
-      }),
-    };
-  }
-  createMulterOptions2(): MulterModuleOptions {
     return {
       storage: diskStorage({
         destination: (req, file, cb) => {
@@ -65,29 +66,19 @@ export class MulterConfigService implements MulterOptionsFactory {
         filename: (req, file, cb) => {
           //get image extension
           let extName = path.extname(file.originalname);
+
           //get image's name (without extension)
           let baseName = path.basename(file.originalname, extName);
+
           let finalName = `${baseName}-${Date.now()}${extName}`;
           cb(null, finalName);
         },
       }),
       fileFilter: (req, file, cb) => {
-        const allowedFileTypes = [
-          '.jpg',
-          '.jpeg', // JPEG
-          '.png', // PNG
-          '.gif', // GIF
-          '.tiff', // TIFF
-          '.psd', // PSD
-          '.bmp', // BMP
-          '.heif', // HEIF
-          '.webp', // WebP
-          '.svg', // SVG
-          '.apng', // APNG
-          '.avif', // AVIF
-        ];
+        const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
         const fileExtension = file.originalname.split('.').pop().toLowerCase();
         const isValidFileType = allowedFileTypes.includes(fileExtension);
+
         if (!isValidFileType) {
           cb(
             new HttpException(
