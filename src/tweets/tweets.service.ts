@@ -47,7 +47,7 @@ export class TweetsService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     const result = await this.tweetModel
-      .find(filter)
+      .find(filter, { content: 0 })
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)

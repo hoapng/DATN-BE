@@ -39,7 +39,7 @@ export class ProductsService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     const result = await this.productModel
-      .find(filter)
+      .find(filter, { description: 0, address: 0 })
       // .aggregate([
       //   {
       //     $match: {
