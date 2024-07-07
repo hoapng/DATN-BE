@@ -32,7 +32,7 @@ export class BadwordsService {
     delete filter.pageSize;
 
     let offset = (+currentPage - 1) * +limit;
-    let defaultLimit = +limit ? +limit : 10;
+    let defaultLimit = +limit;
 
     const totalItems = (await this.badwordModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
