@@ -75,7 +75,25 @@ export class MulterConfigService implements MulterOptionsFactory {
         },
       }),
       fileFilter: (req, file, cb) => {
-        const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        const allowedFileTypes = [
+          'jpg',
+          'jpeg',
+          'png',
+          'gif',
+          'bmp',
+          'tif',
+          'tiff',
+          'raw',
+          'cr2',
+          'nef',
+          'orf',
+          'sr2',
+          'heif',
+          'heic',
+          'svg',
+          'psd',
+          'webp',
+        ];
         const fileExtension = file.originalname.split('.').pop().toLowerCase();
         const isValidFileType = allowedFileTypes.includes(fileExtension);
 
