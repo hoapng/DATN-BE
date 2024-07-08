@@ -76,24 +76,14 @@ export class AuthService {
 
   async provider(user: any, response: Response) {
     //check email exist
-    const userExist = await this.userModel.findOneAndUpdate(
-      { email: user.email },
-      {
-        name: user.name,
-        avatar: user.image,
-      },
-      {
-        omitUndefined: true,
-        upsert: true,
-        new: true,
-      },
-    );
+    const userExist = await this.userModel.findOne({ email: user.email });
     if (userExist) {
       const userUpdate = await this.userModel.findOneAndUpdate(
         { email: user.email },
         {
           name: user.name,
           avatar: user.image,
+          isDeleted: false,
         },
         {
           omitUndefined: true,
