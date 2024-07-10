@@ -9,7 +9,7 @@ export class CreateProductDto {
   description: string | null;
 
   @IsNotEmpty({ message: 'Price is required' })
-  price: string;
+  price: number;
 
   @IsArray()
   @IsNotEmpty({ message: 'Image is required' })

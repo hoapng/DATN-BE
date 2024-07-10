@@ -14,7 +14,7 @@ export class Product {
   description: string;
 
   @Prop()
-  price: string;
+  price: number;
 
   @Prop()
   address: string;
